@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace LandonApi
 {
@@ -55,6 +56,10 @@ namespace LandonApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Use an in-memory database for quick dev and test
+            // TODO : Swap out with a real database
+            services.AddDbContext<HotelApiContext>(opt => opt.UseInMemoryDatabase("HotelDatabase"));
+
             services.AddMvc(opt =>
             {
                 // Use JsonExceptionErro
@@ -100,6 +105,9 @@ namespace LandonApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // Add some test data in development
+                var context = app.ApplicationServices.GetRequiredService<HotelApiContext>();
+                AddTestData(context);
             }
 
             app.UseHsts(opt => {
@@ -115,6 +123,24 @@ namespace LandonApi
             
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        private static void AddTestData(HotelApiContext context)
+        {
+            context.Rooms.Add(new RoomEntity
+            {
+                Id = Guid.Parse("d88eb383-f15f-4b3a-9770-744516ffa85a"),
+                Name = "Oxford",
+                Rate = 123445
+            });
+            context.Rooms.Add(new RoomEntity
+            {
+                Id = Guid.Parse("ef57eea0-2cc6-4f27-9754-fef9ace14977"),
+                Name = "Oxford",
+                Rate = 12344
+            });
+
+            context.SaveChanges();
         }
     }
 }
