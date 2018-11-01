@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using LandonApi.Services;
+using AutoMapper;
 
 namespace LandonApi
 {
@@ -60,6 +61,8 @@ namespace LandonApi
             // Use an in-memory database for quick dev and test
             // TODO : Swap out with a real database
             services.AddDbContext<HotelApiContext>(opt => opt.UseInMemoryDatabase("HotelDatabase"));
+
+            services.AddAutoMapper();
 
             services.AddMvc(opt =>
             {
