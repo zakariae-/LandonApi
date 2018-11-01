@@ -10,7 +10,8 @@ namespace LandonApi.Controllers
         {
             var response = new
             {
-                href = Url.Link(nameof(GetRoot), null)
+                href = Url.Link(nameof(GetRoot), null),
+                rooms = new { href = Url.Link(nameof(RoomsController.GetRooms), null)}
             };
 
             return Ok(response);
