@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using LandonApi.Models;
+using LandonApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +11,11 @@ namespace LandonApi.Controllers
     [Route("/[controller]")]
     public class RoomsController : Controller
     {
-        private readonly HotelApiContext _context;
+        private readonly IRoomService _roomService;
 
-        public RoomsController(HotelApiContext context)
+        public RoomsController(IRoomService roomService)
         {
-            _context = context;
+            _roomService = roomService;
         }
 
         [HttpGet(Name = nameof(GetRooms))]
@@ -27,16 +28,8 @@ namespace LandonApi.Controllers
         [HttpGet("{roomId}", Name = nameof(GetRoomByIdAsync))]
         public async Task<IActionResult> GetRoomByIdAsync(Guid roomId, CancellationToken ct)
         {
-            var entity = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == roomId, ct);
-            if (entity == null) return NotFound();
-
-
-            var resource = new Room
-            {
-                Href = Url.Link(nameof(GetRoomByIdAsync), new { roomId = entity.Id }),
-                Name = entity.Name,
-                Rate = entity.Rate / 100.0m
-            };
+            var resource = await _roomService.GetRoomAsync(roomId, ct);
+            if (resource == null) return NotFound();
 
             return Ok(resource);
         }

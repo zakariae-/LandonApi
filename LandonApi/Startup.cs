@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using LandonApi.Services;
 
 namespace LandonApi
 {
@@ -96,6 +97,8 @@ namespace LandonApi
 
 
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+
+            services.AddScoped<IRoomService, DefaultRoomService>();
 
         }
 
