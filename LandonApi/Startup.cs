@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LandonApi.Filters;
 using LandonApi.Infrastructure;
+using LandonApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,14 +23,20 @@ namespace LandonApi
     {
         private readonly int? _httpsPort;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IHostingEnvironment environment)
         {
-            Configuration = configuration;
+            //Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+
             Environment = environment;
 
             // Get the HTTPS port (only in development)
             if(Environment.IsDevelopment())
             {
+                builder.AddJsonFile($"appsettings.{Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
                 var lauchJsonConfig = new ConfigurationBuilder()
                     .SetBasePath(Environment.ContentRootPath)
                     .AddJsonFile("Properties/launchSettings.json")
@@ -36,6 +44,8 @@ namespace LandonApi
 
                 _httpsPort = lauchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
             }
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -78,6 +88,9 @@ namespace LandonApi
                 // newest version of a route if no version is requested by the client 
                 opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
             });
+
+
+            services.Configure<HotelInfo>(Configuration.GetSection("Info"));
 
         }
 
