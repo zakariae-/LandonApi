@@ -19,20 +19,41 @@ namespace LandonApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly int? _httpsPort;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
+
+            // Get the HTTPS port (only in development)
+            if(Environment.IsDevelopment())
+            {
+                var lauchJsonConfig = new ConfigurationBuilder()
+                    .SetBasePath(Environment.ContentRootPath)
+                    .AddJsonFile("Properties/launchSettings.json")
+                    .Build();
+
+                _httpsPort = lauchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
+            }
         }
 
         public IConfiguration Configuration { get; }
+
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(opt =>
             {
-                //Use JsonExceptionErro
+                // Use JsonExceptionErro
                 opt.Filters.Add(typeof(JsonExceptionFilter));
+
+
+                // Require HTTPS for add controllers
+                opt.SslPort = _httpsPort;
+                opt.Filters.Add(typeof(RequireHttpsAttribute));
 
                 var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                 opt.OutputFormatters.Remove(jsonFormatter);
@@ -57,6 +78,7 @@ namespace LandonApi
                 // newest version of a route if no version is requested by the client 
                 opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +93,7 @@ namespace LandonApi
                 app.UseHsts();
             }
 
+            
             app.UseHttpsRedirection();
             app.UseMvc();
         }

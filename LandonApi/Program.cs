@@ -17,8 +17,16 @@ namespace LandonApi
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseUrls("http://localhost:5000", "https://localhost:5001")
+                .UseIISIntegration()
                 .UseStartup<Startup>();
+
+            return host;
+        }
     }
 }
