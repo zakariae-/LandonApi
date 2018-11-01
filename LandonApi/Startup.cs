@@ -88,11 +88,17 @@ namespace LandonApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
+            app.UseHsts(opt => {
+                // How long browser will remember the HSTS setting
+                opt.MaxAge(days: 180);
+                // Include subdomains flag => HSTS applies not just to the root domain 
+                // of this API, but any potential sub-domains
+                opt.IncludeSubdomains();
+                // browser allowed to assume the site use HSTS if the site submitted
+                // to a common list of HSTS enabled websites
+                opt.Preload();
+            });
             
             app.UseHttpsRedirection();
             app.UseMvc();
