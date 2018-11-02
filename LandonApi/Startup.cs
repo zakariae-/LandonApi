@@ -69,7 +69,6 @@ namespace LandonApi
                 // Use JsonExceptionErro
                 opt.Filters.Add(typeof(JsonExceptionFilter));
 
-
                 // Require HTTPS for add controllers
                 opt.SslPort = _httpsPort;
                 opt.Filters.Add(typeof(RequireHttpsAttribute));
