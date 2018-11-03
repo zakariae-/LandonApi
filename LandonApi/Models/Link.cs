@@ -37,7 +37,7 @@ namespace LandonApi.Models
         [DefaultValue(GetMethod)]
         public string Method { get; set; }
 
-        [JsonProperty(Order = -2, PropertyName = PropertyName, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = -2, PropertyName = PropertyName, NullValueHandling = NullValueHandling.Ignore)]
         public string[] Relations { get; set; }
 
         // Store the route name before being rewritten
