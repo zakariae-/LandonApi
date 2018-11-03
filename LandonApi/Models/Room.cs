@@ -1,10 +1,8 @@
 ﻿using System;
 namespace LandonApi.Models
 {
-    public class Room
+    public class Room : Resource
     {
-        public string Href { get; set; }
-
         public string Name { get; set; }
 
         public decimal Rate { get; set; }
