@@ -20,15 +20,20 @@ namespace LandonApi.Controllers
         }
 
         [HttpGet(Name = nameof(GetRoomsAsync))]
-        public async Task<IActionResult> GetRoomsAsync(CancellationToken ct)
+        public async Task<IActionResult> GetRoomsAsync(
+            [FromQuery] PagingOptions pagingOptions,
+            CancellationToken ct)
         {
-            var rooms = await _roomService.GetRoomsAsync(ct);
+            var rooms = await _roomService.GetRoomsAsync(pagingOptions, ct);
 
             var collectionLink = Link.ToCollection(nameof(GetRoomsAsync));
-            var collection = new Collection<Room>
+            var collection = new PagedCollection<Room>
             {
                 Self = collectionLink,
-                Value = rooms.ToArray()
+                Value = rooms.Items.ToArray(),
+                Size = rooms.TotalSize,
+                Offset = pagingOptions.Offset.Value,
+                Limit = pagingOptions.Limit.Value
             };
 
             return Ok(collection);

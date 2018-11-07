@@ -29,12 +29,22 @@ namespace LandonApi.Services
             return _mapper.Map<Room>(entity);
         }
 
-        public async Task<IEnumerable<Room>> GetRoomsAsync(CancellationToken ct)
+        public async Task<PageResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, CancellationToken ct)
+
         {
+            var rooms = await _context.Rooms.ToArrayAsync();
             var query = _context.Rooms
                                 .Select(entity => _mapper.Map<Room>(entity));
 
-            return await query.ToArrayAsync();
+            var pagedRooms = query
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value);
+
+            return new PageResults<Room>
+            {
+                Items = pagedRooms,
+                TotalSize = rooms.Count()
+            };
         }
     }
 }

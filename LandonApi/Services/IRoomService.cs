@@ -10,6 +10,6 @@ namespace LandonApi.Services
     {
         Task<Room> GetRoomAsync(Guid id, CancellationToken ct);
 
-        Task<IEnumerable<Room>> GetRoomsAsync(CancellationToken ct);
+        Task<PageResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, CancellationToken ct);
     }
 }
