@@ -101,6 +101,7 @@ namespace LandonApi
 
 
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+            services.Configure<PagingOptions>(Configuration.GetSection("DefaultPagingOptions"));
 
             services.AddScoped<IRoomService, DefaultRoomService>();
 
