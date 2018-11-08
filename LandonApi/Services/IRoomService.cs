@@ -8,8 +8,13 @@ namespace LandonApi.Services
 {
     public interface IRoomService
     {
-        Task<Room> GetRoomAsync(Guid id, CancellationToken ct);
+        Task<Room> GetRoomAsync(
+            Guid id, 
+            CancellationToken ct);
 
-        Task<PageResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, CancellationToken ct);
+        Task<PageResults<Room>> GetRoomsAsync(
+            PagingOptions pagingOptions, 
+            SortOptions<Room, RoomEntity> sortOptions, 
+            CancellationToken ct);
     }
 }
