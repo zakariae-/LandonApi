@@ -29,4 +29,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\SortOptionProcessor{T,Entity}.cs" />
+  </ItemGroup>
 </Project>
